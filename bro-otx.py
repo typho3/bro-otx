@@ -90,7 +90,7 @@ def main():
     '''Retrieve intel from OTXv2 API.'''
 
     parser = ArgumentParser(description='AlienVault OTXv2 Bro Client')
-    parser.add_argument('-c', '--config', 
+    parser.add_argument('-c', '--config',
                         help='configuration file path',
                         default='bro-otx.conf')
     args = parser.parse_args()
@@ -109,8 +109,8 @@ def main():
         for pulse in iter_pulses(key, mtime):
             # Intel description for notices
             description = 'AlienVault OTXv2 - %s ID: %s Author: %s' % (
-                                pulse[u'name'], 
-                                pulse[u'id'], 
+                                pulse[u'name'],
+                                pulse[u'id'],
                                 pulse[u'author_name'])
             # A lot of care has to go into creating this description.
             # Tabs are removed to prevent Bro from throwing errors.
@@ -121,9 +121,14 @@ def main():
                     continue
                 try:
                     url = pulse[u'references'][0]
+		    url = url.replace("http://","")
+		    url = url.replace("https://","")
                 except IndexError:
-                    url = 'https://otx.alienvault.com'
-                fields = [to_unicode(indicator[u'indicator']),
+                    url = 'otx.alienvault.com'
+	
+		tempIndicator = indicator[u'indicator'].replace("http://","")
+		tempIndicator = tempIndicator.replace("https://","")
+                fields = [to_unicode(tempIndicator),
                     to_unicode(bro_type),
                     to_unicode(description),
                     to_unicode(url),
